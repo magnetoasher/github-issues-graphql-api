@@ -5,7 +5,7 @@ import { DateTime } from "luxon";
 import { IssuesData } from "../../ts-generalTypes/InitialInterfaces";
 import FilterInput from "../Common/FilterInput";
 
-const Table = ({ data }: { data: IssuesData }) => {
+const Table = ({ data }: { data: IssuesData[] }) => {
   const columns: TableColumn<IssuesData>[] = [
     {
       name: "Created At",
@@ -45,6 +45,7 @@ const Table = ({ data }: { data: IssuesData }) => {
             type="button"
             className="px-2 py-2.5 mr-2 bg-blue-600 text-white font-medium text-xs uppercase rounded shadow-md hover:bg-blue-700 hover:shadow-lg focus:bg-blue-700 focus:shadow-lg focus:outline-none focus:ring-0 active:bg-blue-800 active:shadow-lg transition duration-150 ease-in-out"
             onClick={handleEditClick}
+            data-testid="btn-edit"
           >
             Edit
           </button>
@@ -52,6 +53,7 @@ const Table = ({ data }: { data: IssuesData }) => {
             type="button"
             className="px-2 py-2.5 bg-red-600 text-white font-medium text-xs uppercase rounded shadow-md hover:bg-red-700 hover:shadow-lg focus:bg-red-700 focus:shadow-lg focus:outline-none focus:ring-0 active:bg-red-800 active:shadow-lg transition duration-150 ease-in-out"
             onClick={handleDeleteClick}
+            data-testid="btn-delete"
           >
             Delete
           </button>
@@ -83,7 +85,7 @@ const Table = ({ data }: { data: IssuesData }) => {
   const [filterText, setFilterText] = useState<string>("");
   const [resetPaginationToggle, setResetPaginationToggle] =
     useState<boolean>(false);
-  const filteredItems = Object.values(data)
+  const filteredItems = data
     .filter(
       (item) =>
         JSON.stringify(item).toLowerCase().indexOf(filterText.toLowerCase()) !==
@@ -91,7 +93,6 @@ const Table = ({ data }: { data: IssuesData }) => {
     )
     .map((item) => ({
       ...item,
-      createdAt: DateTime.fromISO(item.createdAt).toJSDate(),
     }))
     .sort(function (a, b) {
       return +b.createdAt - +a.createdAt;
@@ -118,6 +119,7 @@ const Table = ({ data }: { data: IssuesData }) => {
 
   return (
     <Datatable
+      title="Facebook/React Issues"
       columns={columns}
       data={filteredItems}
       customStyles={customStyles}
